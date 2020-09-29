@@ -1,0 +1,62 @@
+version: '3'
+services:
+  composer:
+    image: composer:1.9.0
+    working_dir: /var/www
+    container_name: composer
+    depends_on:
+      - "webserver"
+    command: composer update
+    volumes:
+      - ./code/vendor:/var/www/vendor
+      - ./code/composer.json:/var/www/composer.json
+    networks:
+      - app-network
+
+  #Apache Service
+  webserver:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: php:7.2-apache
+    container_name: webserver
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "80:8080"
+    environment:
+      APACHE_RUN_USER: www-data
+      APACHE_RUN_GROUP: www-data
+    volumes:
+      - ./code:/var/www
+      - ./services/httpd/conf.d/sites-enabled/server.conf:/etc/apache2/ports.conf
+    networks:
+      - app-network
+
+  #MySQL Service
+  db:
+    image: mysql:5.7.22
+    container_name: db
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_DATABASE: laravel
+      MYSQL_ROOT_PASSWORD: pwd4s20r
+      SERVICE_TAGS: dev
+      SERVICE_NAME: mysql
+    volumes:
+      - dbdata:/var/lib/mysql/
+      - ./services/mysql/my.cnf:/etc/mysql/my.cnf
+    networks:
+      - app-network
+
+#Docker Networks
+networks:
+  app-network:
+    driver: bridge
+#Volumes
+volumes:
+  dbdata:
+    driver: local
