@@ -24,7 +24,11 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')->hourly();
+		$sendOrderDeliveredMessage = app()->make("App\Console\SendOrderDeliveredMessage");
+		$updateMessagesStatuses = app()->make("App\Console\UpdateMessagesStatuses");
+
+        $schedule->call($sendOrderDeliveredMessage)->everyMinute();
+        $schedule->call($updateMessagesStatuses)->everyMinute();
     }
 
     /**
