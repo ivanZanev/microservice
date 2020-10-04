@@ -1,0 +1,87 @@
+INTRODUCTION
+===============================================================================
+
+Microservice is a simple web service for support agents to view statuses of 
+messages sent via a selected third-party SMS service provider.
+
+
+OVERVIEW
+===============================================================================
+
+The SMS service provider used is Twilio.
+
+A RESTful interface is available and accessed via the "api/messages" endpoint.
+
+The following data entities are kept in the database: 
+ - restaurants (with their name and standard delivery time)
+ - clients (with their name and phone number)
+ - orders (with their estimated delivery time)
+ - messages (with sms gateway delivery status and error information)
+
+The estimated delivery time for a new order is taken from the restaurant's 
+standard delivery time.
+
+The following actions have been implemented:
+ - create order - a simple form interface is available to test creating a new 
+   order. When a new order is created, a message is generated and sent 
+   via the SMS service provider.
+ - view messages - Messages are shown by first loading those with status 
+   any other than delivered. The non-delivered messages are limited to 
+   those updated in the last 24 hours.
+
+There are two tasks scheduled on each minute:
+ - update messages statuses - messages with a non-terminal status will be 
+   synced from the SMS service provider. 
+ - send reminder message - send an additional second message, 90 minutes after 
+   the estimated delivery time.
+
+
+HOW TO INSTALL
+===============================================================================
+1. Run Docker
+
+> docker-compose up -d
+
+2. Run Composer
+
+> composer install
+
+3. Initial Laravel App Setup
+
+Copy .env-example to .env
+
+Change database settings in the .env file to match 
+those in the docker-compose.yml
+
+Run the following command
+
+> php artisan key:generate
+
+And then the mgirations (+seeding)
+
+> php artisan migrate --seed
+
+4. Run NPM
+
+> npm install
+
+> npm run dev
+
+// optional: npm install cross-env
+
+
+SEEDS
+===============================================================================
+
+The seeders contain few restaurants and clients to ease the testing of the 
+system.
+
+
+TESTS
+===============================================================================
+
+To run the tests:
+
+php artisan test
+
+However, they run in the same database so they will purge everything from it.
