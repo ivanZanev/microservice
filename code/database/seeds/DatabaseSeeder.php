@@ -43,59 +43,5 @@ class DatabaseSeeder extends Seeder
 		$restaurant3->name = "BreadAndButter";
 		$restaurant3->delivery_time_minutes = 40;
 		$restaurant3->save();
-
-		$order1 = new Order();
-		$order1->client()->associate($client1);
-		$order1->restaurant()->associate($restaurant1);
-		$order1->estimated_delivery_time = now()->addMinutes($restaurant1->delivery_time_minutes);
-		$order1->save();
-
-		for ($c = 0; $c < 30; $c++) {
-			$message = new Message();
-			$message->order()->associate($order1);
-			$message->text = $this->messageService->generateOrderPlacedMessage($order1);
-			$message->twilio_sid = "SMXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX";
-			$message->twilio_status = Message::TWILIO_STATUS_FAILED;
-			$message->twilio_error_code = "1239";
-			$message->twilio_error_message = "Something went wrong.";
-			$message->twilio_date_sent = now();
-			$message->updated_at = now()->subHours(26);
-			$message->save();
-		}
-
-		for ($c = 0; $c < 10; $c++) {
-			$message = new Message();
-			$message->order()->associate($order1);
-			$message->text = $this->messageService->generateOrderPlacedMessage($order1);
-			$message->twilio_sid = "SMXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX";
-			$message->twilio_status = Message::TWILIO_STATUS_FAILED;
-			$message->twilio_error_code = "1239";
-			$message->twilio_error_message = "Something went wrong.";
-			$message->twilio_date_sent = now();
-			$message->save();
-		}
-
-		for ($c = 0; $c < 30; $c++) {
-			$message = new Message();
-			$message->order()->associate($order1);
-			$message->text = $this->messageService->generateOrderPlacedMessage($order1);
-			$message->twilio_sid = "SMXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX";
-			$message->twilio_status = Message::TWILIO_STATUS_DELIVERED;
-			$message->twilio_date_sent = now();
-			$message->is_delivered = true;
-			$message->save();
-		}
-
-		$order1 = new Order();
-		$order1->client()->associate($client1);
-		$order1->restaurant()->associate($restaurant2);
-		$order1->estimated_delivery_time = now()->addMinutes($restaurant2->delivery_time_minutes);
-		$order1->save();
-
-		$order1 = new Order();
-		$order1->client()->associate($client1);
-		$order1->restaurant()->associate($restaurant3);
-		$order1->estimated_delivery_time = now()->addMinutes($restaurant3->delivery_time_minutes);
-		$order1->save();
     }
 }
