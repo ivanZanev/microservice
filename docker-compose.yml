@@ -1,24 +1,28 @@
 version: '3'
 services:
+  node:
+    image: node:latest
+    working_dir: /var/www/html
+    container_name: node
+    volumes:
+      - ./code/node_modules:/var/www/html/node_modules
+      - ./code/package.json:/var/www/html/package.json
+
   composer:
     image: composer:1.9.0
-    working_dir: /var/www
+    working_dir: /var/www/html
     container_name: composer
     depends_on:
       - "webserver"
-    command: composer update
     volumes:
-      - ./code/vendor:/var/www/vendor
-      - ./code/composer.json:/var/www/composer.json
-    networks:
-      - app-network
+      - ./code/vendor:/var/www/html/vendor
+      - ./code/composer.json:/var/www/html/composer.json
 
   #Apache Service
   webserver:
     build:
       context: .
       dockerfile: Dockerfile
-    image: php:7.2-apache
     container_name: webserver
     restart: unless-stopped
     tty: true
@@ -27,9 +31,13 @@ services:
     environment:
       APACHE_RUN_USER: www-data
       APACHE_RUN_GROUP: www-data
+      APACHE_LYNX: "cat"
     volumes:
-      - ./code:/var/www
+      - ./code:/var/www/html
       - ./services/httpd/conf.d/sites-enabled/server.conf:/etc/apache2/ports.conf
+      - ./services/cron.d/laravel-scheduler:/var/www/laravel-scheduler
+      - ./services/cron.d/crontab:/etc/crontab
+      - ./services/cron.d/log:/var/log/cron
     networks:
       - app-network
 
