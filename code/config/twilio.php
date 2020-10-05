@@ -1,7 +1,7 @@
 <?php
 
 return [
-	'account_sid' => 'ACa44c2b45cffca4ee2b235339de6fdc91',
-	'auth_token' => 'a0b61ece8adb367ba9abd87f79760151',
+	'account_sid' => env('TWILIO_ACCOUNT_SID', ''),
+	'auth_token' => env("TWILIO_AUTH_TOKEN", ''),
 	'from' => '+14133393301'
 ];

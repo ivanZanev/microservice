@@ -69,6 +69,14 @@ And then the mgirations (+seeding)
 
 // optional: npm install cross-env
 
+5. Additionally, you must add the following lines to your .env file:
+
+TWILIO_ACCOUNT_SID=
+TWILIO_AUTH_TOKEN=
+
+You must fill in the Twilio account sid and auth token, which are available in 
+the Twilio account console.
+
 
 SEEDS
 ===============================================================================
